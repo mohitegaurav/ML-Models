@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            loadData();
+            function loadData() {
+                $.ajax({
+                    url: 'http://localhost:1230/Api/DepartmentApi',
+                    type: 'GET'
+                }).done(function (resp) {
+                    $("#tblDetails tbody").html('');
+                    var tr;
+                    $.each(resp, function (i, d) {
+                        tr += "<tr><td>" + d.DeptUniqueId + "</td><td>" + d.DeptNo + "</td><td>" + d.DeptName + "</td><td>" + d.Location + "</td><td>" + d.Capacity + "</td></tr>";
+                    });
+                    $("#tblDetails tbody").append(tr);
+                }).fail(function (err) {
+                    alert("Error Occured:" + err);
+                });
+            }
+
+            $("#btnSave").on('click', function () {
+                var dept = {};
+                dept.DeptNo = $("#deptNo").val();
+                dept.DeptName = $("#deptName").val();
+                dept.Location = $("#deptLocation").val();
+                dept.Capacity = $("#deptCapacity").val();
+
+                $.ajax({
+                    url: 'http://localhost:1230/Api/DepartmentApi',
+                    type: 'POST',
+                    data: dept,
+                    datatype: 'json',
+                    contenttype: 'application/json;utf-8'
+                }).done(function (resp) {
+                    $("#deptUniqueId").val(resp.DeptUniqueId);
+                    loadData();
+                }).fail(function (err) {
+                    alert("Error Occured:" + err);
+                });
+            
+            });
+        })
+    </script>
+</head>
+<body>
+    <table border="1" align="center" cellspacing="5">
+        <tr>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>Dept Unique Id:</td>
+            <td><input type="text" id="deptUniqueId" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Dept No:</td>
+            <td><input type="text" id="deptNo" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" id="deptName" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Location:</td>
+            <td><input type="text" id="deptLocation" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Capacity:</td>
+            <td><input type="text" id="deptCapacity" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="button" value="Save" id="btnSave" class="btn btn-success" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table class="table table-bordered table-striped" id="tblDetails">
+                    <thead>
+                        <tr>
+                            <th>Dept Unique Id</th>
+                            <th>Number</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Capacity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
